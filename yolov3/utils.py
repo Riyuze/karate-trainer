@@ -61,7 +61,7 @@ def load_yolo_weights(model, weights_file):
 
         assert len(wf.read()) == 0, 'failed to read all data'
 
-def Load_Yolo_model():
+def load_Yolo_model():
     gpus = tf.config.experimental.list_physical_devices('GPU')
     if len(gpus) > 0:
         print(f'GPUs {gpus}')
