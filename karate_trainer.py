@@ -3,28 +3,32 @@ from tkinter import ttk
 
 import sv_ttk
 
-def start():
-    print("Hello!")
+def start(text):
+    print(text)
 
-def main():
-    root = tk.Tk()
-    root.title("Karate Trainer")
-    root.geometry("1080x720")
-    root.iconbitmap("./assets/karate_trainer.ico")
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
 
-    title_lbl = ttk.Label(root, text="Karate Trainer", font=("Arial Bold", 30))
-    title_lbl.pack()
+        self.geometry("1080x720")
+        self.title("Karate Trainer")
+        self.iconbitmap("./assets/karate_trainer.ico")
 
-    start_btn = ttk.Button(root, text="Start", width=40, command=start)
-    start_btn.pack()
+        self.create_widgets()
+    
+    def create_widgets(self):
+        title_lbl = ttk.Label(self, text="Karate Trainer", font=("Arial Bold", 30)).pack(pady=5)
 
-    sv_ttk.set_theme("dark")
+        start_btn = ttk.Button(self, text="Start", width=40, command=lambda: start("Test")).pack(pady=5)
+        quit_btn = ttk.Button(self, text="Quit", width=40).pack(pady=5)
 
+        sv_ttk.set_theme("dark")
+
+if __name__ == "__main__":
     try:  
         from ctypes import windll
         windll.shcore.SetProcessDpiAwareness(1)
     finally:
-        root.mainloop()
-
-if __name__ == "__main__":
-    main()
+        app = App()
+        app.mainloop()
+    
