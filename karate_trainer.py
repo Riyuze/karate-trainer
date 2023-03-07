@@ -9,6 +9,7 @@ def main():
     root = tk.Tk()
     root.title("Karate Trainer")
     root.geometry("1080x720")
+    root.iconbitmap("./assets/karate_trainer.ico")
 
     title_lbl = tk.Label(root, text="Karate Trainer", font=("Arial Bold", 30))
     title_lbl.pack()
