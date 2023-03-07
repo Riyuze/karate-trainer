@@ -17,7 +17,7 @@ class App(tk.Tk):
         win.quit()
     
     def create_widgets(self):
-        title_lbl = ttk.Label(self, text="Karate Trainer", font=("Arial Bold", 30)).pack(pady=5)
+        title_lbl = ttk.Label(self, text="Karate Trainer", font=("Times new roman", 30, "bold")).pack(pady=5)
 
         start_btn = ttk.Button(self, text="Start", width=40).pack(pady=5)
         quit_btn = ttk.Button(self, text="Quit", width=40, command=self.quit).pack(pady=5)
