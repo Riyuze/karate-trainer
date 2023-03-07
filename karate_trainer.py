@@ -1,18 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 
-import sv_ttk   
-    
+import sv_ttk
 
-class App(tk.Tk):
-    def __init__(self):
-        super().__init__()
 
-        self.geometry("1080x720")
-        self.title("Karate Trainer")
-        self.iconbitmap("./assets/karate_trainer.ico")
-
-        sv_ttk.set_theme("dark")
+class Menu(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
 
         self.title_lbl = ttk.Label(self, text="Karate Trainer", font=("Times new roman", 30, "bold")).pack(pady=5)
 
@@ -21,6 +15,33 @@ class App(tk.Tk):
 
     def close(self):
         win.quit()
+    
+
+class App(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+
+        self.geometry("1080x720")
+        self.title("Karate Trainer")
+        self.iconbitmap("./assets/karate_trainer.ico")
+
+        sv_ttk.set_theme("dark")
+
+        container = tk.Frame(self)
+
+        container.pack(expand=True)
+
+        self.frames = {}
+        for F in (Menu,):
+            frame = F(container, self)
+            self.frames[F] = frame
+            frame.grid(sticky="nsew")
+
+        self.show_frame(Menu)
+
+    def show_frame(self, page):
+        frame = self.frames[page]
+        frame.tkraise()
 
 if __name__ == "__main__":
     try:  
@@ -29,4 +50,3 @@ if __name__ == "__main__":
     finally:
         app = App()
         app.mainloop()
-    
