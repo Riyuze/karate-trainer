@@ -44,7 +44,7 @@ class Choice(tk.Frame):
         self.start_btn = ttk.Button(self, text="Start", width=40, command= lambda: self.start())
         self.start_btn.state(["disabled"])
         self.start_btn.pack(pady=5)
-        
+
         self.back_btn = ttk.Button(self, text="Back", width=40, command= lambda: controller.show_frame(Menu))
         self.back_btn.pack(pady=5)
 
@@ -96,6 +96,7 @@ class App(tk.Tk):
     def show_frame(self, page):
         frame = self.frames[page]
         frame.tkraise()
+
 
 if __name__ == "__main__":
     try:  
