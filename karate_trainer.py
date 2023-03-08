@@ -10,12 +10,36 @@ class Menu(tk.Frame):
 
         self.title_lbl = ttk.Label(self, text="Karate Trainer", font=("Times new roman", 30, "bold")).pack(pady=5)
 
-        self.start_btn = ttk.Button(self, text="Start", width=40).pack(pady=5)
+        self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: controller.show_frame(Choice)).pack(pady=5)
         self.history_btn = ttk.Button(self, text="History", width=40, command= lambda: controller.show_frame(History)).pack(pady=5)
         self.quit_btn = ttk.Button(self, text="Quit", width=40, command=self.quit).pack(pady=5)
 
     def close(self):
         win.quit()
+
+
+class Choice(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.OPTIONS = [
+            "Heian Shodan",
+        ]
+
+        self.option_var = tk.StringVar(self)
+
+        self.title_lbl = ttk.Label(self, text="Pick Your Training Plan", font=("Times new roman", 30, "bold")).pack(pady=5)
+
+        self.option_menu = ttk.OptionMenu(self, self.option_var, "Select one...", *self.OPTIONS)
+        self.option_menu.config(width=38)
+        self.option_menu.pack(pady=5)
+
+        self.start_btn = ttk.Button(self, text="Start", width=40, command= lambda: self.start(self.option_var.get())).pack(pady=5)
+        self.back_btn = ttk.Button(self, text="Back", width=40, command= lambda: controller.show_frame(Menu)).pack(pady=5)
+
+    def start(self, train):
+        print(f"Train: {train}")
+
 
 class History(tk.Frame):
     def __init__(self, parent, controller):
@@ -41,7 +65,7 @@ class App(tk.Tk):
         container.pack(expand=True)
 
         self.frames = {}
-        for F in (Menu, History):
+        for F in (Menu, Choice, History):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
