@@ -11,6 +11,7 @@ class Menu(tk.Frame):
         self.title_lbl = ttk.Label(self, text="Karate Trainer", font=("Times new roman", 30, "bold")).pack(pady=5)
 
         self.start_btn = ttk.Button(self, text="Start", width=40).pack(pady=5)
+        self.history_btn = ttk.Button(self, text="History", width=40).pack(pady=5)
         self.quit_btn = ttk.Button(self, text="Quit", width=40, command=self.quit).pack(pady=5)
 
     def close(self):
