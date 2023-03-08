@@ -6,7 +6,7 @@ import sv_ttk
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
 
         self.title_lbl = ttk.Label(self, text="Karate Trainer", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
@@ -26,7 +26,7 @@ class Menu(tk.Frame):
 
 class Choice(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
 
         self.OPTIONS = [
             "Heian Shodan",
@@ -62,7 +62,7 @@ class Choice(tk.Frame):
 
 class History(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
         
         self.title_lbl = ttk.Label(self, text="History", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
@@ -72,8 +72,8 @@ class History(tk.Frame):
     
 
 class App(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.geometry("1080x720")
         self.title("Karate Trainer")
