@@ -49,11 +49,7 @@ class Choice(tk.Frame):
         self.back_btn.pack(pady=5)
 
     def button_state(self):
-        train = self.option_var.get()
-        if train != "Select one...":
-            self.start_btn.state(["!disabled"])
-        else:
-            self.start_btn.state(["disabled"])
+        self.start_btn.state(["!disabled"])
 
     def start(self):
         train = self.option_var.get()
