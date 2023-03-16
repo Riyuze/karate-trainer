@@ -71,7 +71,7 @@ class Train(tk.Frame):
         self.image_lbl = ttk.Label(self)
         self.image_lbl.pack(pady=5)
 
-        self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Choice))
+        self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: self.back(controller))
         self.back_btn.pack(pady=5)
 
         self.cap = cv2.VideoCapture(0)
@@ -93,6 +93,9 @@ class Train(tk.Frame):
         self.image_lbl.photo_image = self.photo_image
         self.image_lbl.configure(image=self.photo_image)
         self.image_lbl.after(10, self.show_camera)
+
+    def back(self, controller):
+        controller.show_frame(Choice)
 
 
 class History(tk.Frame):
