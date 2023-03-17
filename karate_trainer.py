@@ -5,9 +5,9 @@ import sv_ttk
 
 import cv2
 
-from PIL import Image, ImageTk
-
 import time
+
+from playsound import playsound
 
 
 class Menu(tk.Frame):
@@ -117,6 +117,7 @@ class Train(tk.Frame):
                     if self.current - self.prev >= 1:
                         self.prev = self.current
                         self.TIMER -= 1
+                        playsound("./assets/Beep.wav")
 
                 else:
                     _, self.img = self.cap.read()
