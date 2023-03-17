@@ -7,6 +7,8 @@ import cv2
 
 from PIL import Image, ImageTk
 
+import time
+
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
@@ -73,18 +75,20 @@ class Train(tk.Frame):
             "u_hidari_chudan_shuto_uke", "v_yame_hachiji_dachi"
         ]
 
+        self.started = False
+
+        self.TIMER = 10
+
         self.title_lbl = ttk.Label(self, text="Train", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
 
-        self.image_lbl = ttk.Label(self)
-        self.image_lbl.pack(pady=5)
-
-        self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: self.start())
-        self.start_btn.pack(pady=5)
+        self.camera_btn = ttk.Button(self, text="Show Camera", width=40, command=lambda: self.show_camera())
+        self.camera_btn.pack(pady=5)
 
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Choice))
         self.back_btn.pack(pady=5)
 
+    def show_camera(self):
         self.cap = cv2.VideoCapture(0)
 
         self.width, self.height = 1920, 1080
@@ -92,23 +96,39 @@ class Train(tk.Frame):
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
 
-        self.show_camera()
+        while True:
+            _, self.img = self.cap.read()
+            cv2.imshow("Camera", self.img)
 
-    def show_camera(self):
-        self.opencv_image = cv2.cvtColor(self.cap.read()[1], cv2.COLOR_BGR2RGBA)
+            self.k = cv2.waitKey(125)
 
-        self.captured_image = Image.fromarray(self.opencv_image)
+            if self.k == 32:
+                self.prev = time.time()
+                while self.TIMER >= 0:
+                    _, self.img = self.cap.read()
 
-        self.photo_image = ImageTk.PhotoImage(image=self.captured_image)
+                    self.font = cv2.FONT_HERSHEY_SIMPLEX
+                    cv2.putText(self.img, str(self.TIMER), (200, 250), self.font, 7, (0, 255, 255), 4, cv2.LINE_AA)
 
-        self.image_lbl.photo_image = self.photo_image
-        self.image_lbl.configure(image=self.photo_image)
-        self.image_lbl.after(10, self.show_camera)
+                    cv2.imshow("Camera", self.img)
+                    cv2.waitKey(125)
 
-    def start(self):
-        for item in self.HEIAN_SHODAN:
-            self.captured_image.save(f"temp/{item}.png")
-            break
+                    self.current = time.time()
+                    if self.current - self.prev >= 1:
+                        self.prev = self.current
+                        self.TIMER -= 1
+
+                else:
+                    _, self.img = self.cap.read()
+
+                    cv2.imshow("Camera", self.img)
+
+            elif self.k == 27:
+                break
+
+        self.cap.release()
+
+        cv2.destroyAllWindows()
 
 
 class History(tk.Frame):
