@@ -100,7 +100,7 @@ class Train(tk.Frame):
             _, self.img = self.cap.read()
             cv2.imshow("Camera", self.img)
 
-            self.k = cv2.waitKey(125)
+            self.k = cv2.waitKey(1)
 
             if self.k == 32:
                 self.prev = time.time()
@@ -111,13 +111,14 @@ class Train(tk.Frame):
                     cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
                     cv2.imshow("Camera", self.img)
-                    cv2.waitKey(250)
+                    cv2.waitKey(1)
 
                     self.current = time.time()
                     if self.current - self.prev >= 1:
                         self.prev = self.current
                         self.TIMER -= 1
-                        playsound("./assets/Beep.wav", block=False)
+                        if self.TIMER > 0:
+                            playsound("./assets/beep.wav", block=False)
 
                 else:
                     _, self.img = self.cap.read()
@@ -125,9 +126,12 @@ class Train(tk.Frame):
                     if self.TIMER == 0:
                         self.font = cv2.FONT_HERSHEY_SIMPLEX
                         cv2.putText(self.img, "Start!", (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                        playsound("./assets/double_beep.wav", block=False)
+                        cv2.imshow("Camera", self.img)
+                        cv2.waitKey(250)
 
                     cv2.imshow("Camera", self.img)
-                    cv2.waitKey(250)
+                    cv2.waitKey(1)
 
             elif self.k == 27:
                 break
