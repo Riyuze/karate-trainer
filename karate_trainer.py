@@ -79,6 +79,8 @@ class Train(tk.Frame):
 
         self.TIMER = 10
 
+        self.index = 0
+
         self.title_lbl = ttk.Label(self, text="Train", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
 
@@ -95,6 +97,8 @@ class Train(tk.Frame):
 
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        
+        self.font = cv2.FONT_HERSHEY_SIMPLEX
 
         while True:
             _, self.img = self.cap.read()
@@ -107,7 +111,6 @@ class Train(tk.Frame):
                 while self.TIMER > 0:
                     _, self.img = self.cap.read()
 
-                    self.font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
                     cv2.imshow("Camera", self.img)
@@ -124,11 +127,47 @@ class Train(tk.Frame):
                     _, self.img = self.cap.read()
 
                     if self.TIMER == 0:
-                        self.font = cv2.FONT_HERSHEY_SIMPLEX
                         cv2.putText(self.img, "Start!", (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
                         playsound("./assets/double_beep.wav", block=False)
                         cv2.imshow("Camera", self.img)
                         cv2.waitKey(250)
+
+                        while True:
+                            _, self.img = self.cap.read()
+
+                            self.prev = time.time()
+                            self.TIMER = 2
+
+                            while self.TIMER > 0:  
+                                _, self.img = self.cap.read()
+                                self.current = time.time()
+                                if self.current - self.prev >= 1:
+                                    self.prev = self.current
+                                    self.TIMER -= 1
+
+                                cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                                cv2.imshow("Camera", self.img)
+                                cv2.waitKey(1)
+
+                            if self.TIMER == 0:
+                                _, self.img = self.cap.read()
+                                cv2.imshow("Camera", self.img)
+                                cv2.waitKey(1)
+                                
+                                playsound("./assets/double_beep.wav", block=False)
+                                cv2.imwrite(f"temp/{self.HEIAN_SHODAN[self.index]}.png", self.img)
+                                self.index += 1
+                            
+                            else:
+                                _, self.img = self.cap.read()
+                                cv2.imshow("Camera", self.img)
+                                cv2.waitKey(1)
+
+                            if self.index == 22:
+                                self.TIMER = 10
+                                self.index = 0
+                                #Playsound training finished
+                                break
 
                     cv2.imshow("Camera", self.img)
                     cv2.waitKey(1)
