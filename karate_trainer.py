@@ -107,6 +107,7 @@ class Train(tk.Frame):
             self.k = cv2.waitKey(1)
 
             if self.k == 32:
+                playsound("./assets/beep.wav", block=False)
                 self.prev = time.time()
                 while self.TIMER > 0:
                     _, self.img = self.cap.read()
