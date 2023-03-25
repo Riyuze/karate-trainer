@@ -112,17 +112,16 @@ class Train(tk.Frame):
                 while self.TIMER > 0:
                     _, self.img = self.cap.read()
 
-                    cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-
-                    cv2.imshow("Camera", self.img)
-                    cv2.waitKey(1)
-
                     self.current = time.time()
                     if self.current - self.prev >= 1:
                         self.prev = self.current
                         self.TIMER -= 1
                         if self.TIMER > 0:
                             playsound("./assets/beep.wav", block=False)
+                    
+                    cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.imshow("Camera", self.img)
+                    cv2.waitKey(1)
 
                 else:
                     _, self.img = self.cap.read()
