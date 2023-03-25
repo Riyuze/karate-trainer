@@ -163,10 +163,10 @@ class Train(tk.Frame):
                                 cv2.imshow("Camera", self.img)
                                 cv2.waitKey(1)
 
-                            if self.index == 22:
+                            if self.index == 1:
                                 self.TIMER = 10
                                 self.index = 0
-                                #Playsound training finished
+                                playsound("./assets/training_finished.mp3", block=False)
                                 break
 
                     cv2.imshow("Camera", self.img)
