@@ -87,6 +87,9 @@ class Train(tk.Frame):
         self.camera_btn = ttk.Button(self, text="Show Camera", width=40, command=lambda: self.show_camera())
         self.camera_btn.pack(pady=5)
 
+        self.preview_btn = ttk.Button(self, text="Preview", width=40, command= lambda: controller.show_frame(Preview))
+        self.preview_btn.pack(pady=5)
+
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Choice))
         self.back_btn.pack(pady=5)
 
@@ -180,6 +183,17 @@ class Train(tk.Frame):
         cv2.destroyAllWindows()
 
 
+class Preview(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+
+        self.title_lbl = ttk.Label(self, text="Preview", font=("Times new roman", 30, "bold"))
+        self.title_lbl.pack(pady=5)
+
+        self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Train))
+        self.back_btn.pack(pady=5)
+
+
 class History(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -207,7 +221,7 @@ class App(tk.Tk):
         container.pack(expand=True)
 
         self.frames = {}
-        for F in (Menu, Choice, History, Train):
+        for F in (Menu, Choice, History, Train, Preview):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
