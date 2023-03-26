@@ -1,13 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-
 import sv_ttk
-
 import cv2
-
 import time
-
 from playsound import playsound
+import os
+from PIL import Image, ImageTk
 
 
 class Menu(tk.Frame):
@@ -187,11 +185,45 @@ class Preview(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
 
+        self.image_list = os.listdir("./temp")
+        self.text_list = [item.removesuffix(".png") for item in self.image_list]
+
+        self.current = 0
+
+        if len(self.image_list) > 0:
+            self.image_txt = self.text_list[0]
+            self.image = Image.open(f"temp/{self.image_list[0]}")
+            self.tkimage = ImageTk.PhotoImage(self.image)
+        else:
+            self.image_txt = None
+            self.image = None
+            self.tkimage = None
+
         self.title_lbl = ttk.Label(self, text="Preview", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
 
+        self.image_lbl = ttk.Label(self, text=self.image_txt, image=self.tkimage)
+        self.image_lbl.pack(pady=5)
+
+        self.prev_btn = ttk.Button(self, text="Previous", width=20, command= lambda: self.move(-1))
+        self.prev_btn.pack(pady=5)
+
+        self.next_btn = ttk.Button(self, text="Next", width=20, command= lambda: self.move(1))
+        self.next_btn.pack(pady=5)
+
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Train))
         self.back_btn.pack(pady=5)
+
+    def move(self, delta):
+        if not (0 <= self.current + delta < len(self.image_list)):
+            print("No more image.")
+            return
+        self.current += delta
+        self.image_txt = self.text_list[self.current]
+        self.image = Image.open(f"temp/{self.image_list[self.current]}")
+        self.tkimage = ImageTk.PhotoImage(self.image)
+        self.image_lbl["text"] = self.image_txt
+        self.image_lbl["image"] = self.tkimage
 
 
 class History(tk.Frame):
