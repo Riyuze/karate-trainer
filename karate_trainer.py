@@ -188,6 +188,7 @@ class Preview(tk.Frame):
         self.image_list = []
         self.text_list = []
         self.image_txt = tk.StringVar()
+        self.image_txt.set("Press Get Image Button.")
         self.tkimage = ""
 
         self.current = 0
@@ -236,7 +237,7 @@ class Preview(tk.Frame):
     def back(self, controller):
         self.image_list = []
         self.text_list = []
-        self.image_txt.set("")
+        self.image_txt.set("Press Get Image Button.")
         self.tkimage = ""
 
         self.current = 0
