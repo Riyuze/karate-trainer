@@ -66,7 +66,7 @@ class Train(tk.Frame):
         super().__init__(parent)
 
         self.HEIAN_SHODAN = [
-            "a_hidari_gedan_barai", "b_migi_chudan_oi_zuki.png", "c_migi_gedan_barai", "d_migi_tetsui_uchi", "e_hidari_chudan_oi_zuki", 
+            "a_hidari_gedan_barai", "b_migi_chudan_oi_zuki", "c_migi_gedan_barai", "d_migi_tetsui_uchi", "e_hidari_chudan_oi_zuki", 
             "f_hidari_gedan_barai", "g_migi_jodan_age_uke", "h_hidari_age_uke_jodan", "i_migi_jodan_age_uke", "j_hidari_gedan_barai",
             "k_migi_chudan_oi_zuki", "l_migi_gedan_barai", "m_hidari_chudan_oi_zuki", "n_hidari_gedan_barai", "o_migi_chudan_oi_zuki",
             "p_hidari_chudan_oi_zuki", "q_migi_chudan_oi_zuki", "r_hidari_chudan_shuto_uke", "s_migi_chudan_shuto_uke", "t_migi_chudan_shuto_uke",
@@ -210,6 +210,10 @@ class Preview(tk.Frame):
         self.next_btn.pack(pady=5)
         self.next_btn.state(["disabled"])
 
+        self.process_btn = ttk.Button(self, text="Process", width=40, command= self.process())
+        self.process_btn.pack(pady=5)
+        self.process_btn.state(["disabled"])
+
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: self.back(controller))
         self.back_btn.pack(pady=5)
 
@@ -244,6 +248,10 @@ class Preview(tk.Frame):
 
         if len(self.image_list) > 1:
             self.next_btn.state(["!disabled"])
+            self.process_btn.state(["!disabled"])
+
+    def process(self):
+        print("Process Started!")
 
     def back(self, controller):
         self.image_list = []
