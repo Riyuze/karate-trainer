@@ -6,6 +6,7 @@ import time
 from playsound import playsound
 import os
 from PIL import Image, ImageTk
+from datetime import datetime
 
 
 class Menu(tk.Frame):
@@ -210,7 +211,7 @@ class Preview(tk.Frame):
         self.next_btn.pack(pady=5)
         self.next_btn.state(["disabled"])
 
-        self.process_btn = ttk.Button(self, text="Process", width=40, command= self.process())
+        self.process_btn = ttk.Button(self, text="Process", width=40, command= lambda: self.process())
         self.process_btn.pack(pady=5)
         self.process_btn.state(["disabled"])
 
@@ -251,7 +252,13 @@ class Preview(tk.Frame):
             self.process_btn.state(["!disabled"])
 
     def process(self):
-        print("Process Started!")
+        self.time = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        self.new_path = f"./pose/{self.time}"
+        
+        if not os.path.exists(self.new_path):
+            os.makedirs(self.new_path)
+            for items in os.listdir("./temp"):
+                os.rename(f"./temp/{items}", f"{self.new_path}/{items}")
 
     def back(self, controller):
         self.image_list = []
@@ -266,6 +273,7 @@ class Preview(tk.Frame):
         self.get_image_btn.state(["!disabled"])
         self.next_btn.state(["disabled"])
         self.prev_btn.state(["disabled"])
+        self.process_btn.state(["disabled"])
 
         controller.show_frame(Train)
 
