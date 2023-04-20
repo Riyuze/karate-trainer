@@ -240,12 +240,15 @@ class Preview(tk.Frame):
         self.image_list = os.listdir("./temp")
         self.text_list = [item.removesuffix(".png") for item in self.image_list]
 
-        self.image_txt.set(self.text_list[0])
-        self.image = Image.open(f"temp/{self.image_list[0]}")
-        self.tkimage = ImageTk.PhotoImage(self.image)
-        self.image_lbl["image"] = self.tkimage
+        if self.image_list:
+            self.image_txt.set(self.text_list[0])
+            self.image = Image.open(f"temp/{self.image_list[0]}")
+            self.tkimage = ImageTk.PhotoImage(self.image)
+            self.image_lbl["image"] = self.tkimage
 
-        self.get_image_btn.state(["disabled"])
+            self.get_image_btn.state(["disabled"])
+        else:
+            self.image_txt.set("No Images Found")
 
         if len(self.image_list) > 1:
             self.next_btn.state(["!disabled"])
