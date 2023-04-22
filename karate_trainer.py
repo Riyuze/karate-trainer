@@ -7,6 +7,7 @@ from playsound import playsound
 import os
 from PIL import Image, ImageTk
 from datetime import datetime
+from person_detector import person_detector
 
 
 class Menu(tk.Frame):
@@ -222,7 +223,7 @@ class Preview(tk.Frame):
         self.current += delta
 
         self.image_txt.set(self.text_list[self.current])
-        self.image = Image.open(f"temp/{self.image_list[self.current]}")
+        self.image = Image.open(os.path.join('./temp', self.image_list[self.current])).resize((720, 480))
         self.tkimage = ImageTk.PhotoImage(self.image)
         self.image_lbl["image"] = self.tkimage
 
@@ -242,7 +243,7 @@ class Preview(tk.Frame):
 
         if self.image_list:
             self.image_txt.set(self.text_list[0])
-            self.image = Image.open(f"temp/{self.image_list[0]}")
+            self.image = Image.open(os.path.join('./temp', self.image_list[0])).resize((720, 480))
             self.tkimage = ImageTk.PhotoImage(self.image)
             self.image_lbl["image"] = self.tkimage
 
@@ -256,12 +257,14 @@ class Preview(tk.Frame):
 
     def process(self):
         self.time = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
-        self.new_path = f"./pose/{self.time}"
+        self.new_path = os.path.join('./pose', self.time)
         
         if not os.path.exists(self.new_path):
             os.makedirs(self.new_path)
             for items in os.listdir("./temp"):
-                os.rename(f"./temp/{items}", f"{self.new_path}/{items}")
+                os.rename(os.path.join('./temp', items), os.path.join(self.new_path, items))
+
+        person_detector(self.new_path)
 
     def back(self, controller):
         self.image_list = []
