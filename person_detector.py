@@ -81,5 +81,4 @@ def person_detector(path):
         os.makedirs(image_path)
 
         for image in images:
-            image_path = os.path.join(image.split('\\')[1], image.split('\\')[2])
-            detect_and_crop_image(yolo, image, os.path.join('./cropped_pose', image_path), show=False)
+            detect_and_crop_image(yolo, image, os.path.join('./cropped_pose', image.split('\\')[1], image.split('\\')[2]), show=False)

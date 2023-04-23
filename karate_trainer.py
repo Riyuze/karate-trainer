@@ -8,6 +8,7 @@ import os
 from PIL import Image, ImageTk
 from datetime import datetime
 from person_detector import person_detector
+from get_coordinates import get_coordinates
 
 
 class Menu(tk.Frame):
@@ -265,6 +266,8 @@ class Preview(tk.Frame):
                 os.rename(os.path.join('./temp', items), os.path.join(self.new_path, items))
 
         person_detector(self.new_path)
+
+        get_coordinates(os.path.join('./cropped_pose', self.time))
 
     def back(self, controller):
         self.image_list = []
