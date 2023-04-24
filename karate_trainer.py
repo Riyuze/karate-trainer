@@ -9,6 +9,9 @@ from PIL import Image, ImageTk
 from datetime import datetime
 from person_detector import person_detector
 from get_coordinates import get_coordinates
+from test_prediction import calculate_similarity
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
 class Menu(tk.Frame):
@@ -213,7 +216,7 @@ class Preview(tk.Frame):
         self.next_btn.pack(pady=5)
         self.next_btn.state(["disabled"])
 
-        self.process_btn = ttk.Button(self, text="Process", width=40, command= lambda: self.process())
+        self.process_btn = ttk.Button(self, text="Process", width=40, command= lambda: self.process(controller))
         self.process_btn.pack(pady=5)
         self.process_btn.state(["disabled"])
 
@@ -256,7 +259,7 @@ class Preview(tk.Frame):
             self.next_btn.state(["!disabled"])
             self.process_btn.state(["!disabled"])
 
-    def process(self):
+    def process(self, controller):
         self.time = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
         self.new_path = os.path.join('./pose', self.time)
         
@@ -268,6 +271,22 @@ class Preview(tk.Frame):
         person_detector(self.new_path)
 
         get_coordinates(os.path.join('./cropped_pose', self.time))
+
+        self.image_list = []
+        self.text_list = []
+        self.image_txt.set("Press Get Image Button.")
+        self.tkimage = ""
+
+        self.current = 0
+
+        self.image_lbl["image"] = self.tkimage
+
+        self.get_image_btn.state(["!disabled"])
+        self.next_btn.state(["disabled"])
+        self.prev_btn.state(["disabled"])
+        self.process_btn.state(["disabled"])
+
+        controller.show_frame(History)
 
     def back(self, controller):
         self.image_list = []
@@ -290,12 +309,60 @@ class Preview(tk.Frame):
 class History(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+
+        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir != 'reference']
+
+        self.option_var = tk.StringVar(self)
         
         self.title_lbl = ttk.Label(self, text="History", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
 
-        self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Menu))
+        self.refresh_btn = ttk.Button(self, text="Refresh", width=40, command=lambda: self.refresh())
+        self.refresh_btn.pack(pady=5)
+
+        self.option_menu = ttk.OptionMenu(self, self.option_var, "Select one...", *self.OPTIONS, command= lambda _: self.button_state())
+        self.option_menu.config(width=38)
+        self.option_menu.pack(pady=5)
+
+        self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: self.calculate())
+        self.start_btn.state(["disabled"])
+        self.start_btn.pack(pady=5)
+
+        self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: self.back(controller))
         self.back_btn.pack(pady=5)
+
+    def button_state(self):
+        self.start_btn.state(["!disabled"])
+
+    def refresh(self):
+        self.menu = self.option_menu['menu']
+        self.menu.delete(0, "end")
+        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir != 'reference']
+        for string in self.OPTIONS:
+            self.menu.add_command(label=string, command= lambda value=string: self.option_var.set(value))
+
+    def back(self, controller):
+        controller.show_frame(Menu)
+        self.start_btn.state(["disabled"])
+
+    def plot(self):
+        fig = Figure(figsize = (5, 5), dpi = 100)        
+        y = [i**2 for i in range(101)]
+        z = [i**2 for i in range(201)]
+        plot1 = fig.add_subplot(121)
+        plot2 = fig.add_subplot(122)
+        plot1.plot(y)
+        plot2.plot(z)
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(pady=5)
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas.get_tk_widget().pack(pady=5)
+
+    def calculate(self):
+        print(calculate_similarity(os.path.join('./coordinates', 'reference'), 0, False))
     
 
 class App(tk.Tk):
