@@ -106,7 +106,7 @@ def plot(path, index, world=False):
 
         if not (landmark_list_1 or landmark_list_2):
             return
-        figure = plt.figure(figsize=(10, 10))
+        figure = plt.figure(figsize=(8, 8))
         ax = plt.axes(projection='3d')
         ax.view_init(elev=elevation, azim=azimuth)
         plotted_landmarks_1 = {}
@@ -178,6 +178,7 @@ def plot(path, index, world=False):
                         color=_normalize_color(
                             connection_drawing_spec.color[0]),
                         linewidth=connection_drawing_spec.thickness)
+        figure.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
         return figure
 
     landmark_subset_1 = landmark_pb2.NormalizedLandmarkList(

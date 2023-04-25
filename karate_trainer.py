@@ -11,7 +11,7 @@ from person_detector import person_detector
 from get_coordinates import get_coordinates
 from test_prediction import calculate_similarity, plot
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class Menu(tk.Frame):
@@ -193,7 +193,7 @@ class Preview(tk.Frame):
 
         self.image_list = []
         self.text_list = []
-        self.image_txt = tk.StringVar()
+        self.image_txt = tk.StringVar(self)
         self.image_txt.set("Press Get Image Button.")
         self.tkimage = ""
 
@@ -324,7 +324,7 @@ class History(tk.Frame):
         self.option_menu.config(width=38)
         self.option_menu.pack(pady=5)
 
-        self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: self.calculate())
+        self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: self.process())
         self.start_btn.state(["disabled"])
         self.start_btn.pack(pady=5)
 
@@ -339,17 +339,91 @@ class History(tk.Frame):
         self.menu.delete(0, "end")
         self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir != 'reference']
         for string in self.OPTIONS:
-            self.menu.add_command(label=string, command= lambda value=string: self.option_var.set(value))
+            self.menu.add_command(label=string, command= lambda value=string: self.set_options(value))
+
+    def set_options(self, value):
+        self.option_var.set(value)
+        self.button_state()
 
     def back(self, controller):
         controller.show_frame(Menu)
         self.start_btn.state(["disabled"])
 
-    def calculate(self):
+    def process(self):
         pose = self.option_var.get()
-        print(calculate_similarity(os.path.join('./coordinates', pose), 0, False))
-        figure = plot(os.path.join('./coordinates', pose), 0, True)
-        figure.show()
+        self.pop_up(pose)
+
+    def pop_up(self, pose):
+        self.win = tk.Toplevel()
+        self.win.wm_title(pose)
+
+        self.HEIAN_SHODAN = [
+            "Hidari Gedan Barai", "Migi Chudan Oi Zuki", "Migi Gedan Barai", "Migi Tetsui Uchi", "Hidari Chudan Oi Zuki", 
+            "Hidari Gedan Barai", "Miki Jodan Age Uke", "Hidari Age Uke Jodan", "Migi Jodan Age Uke", "Hidari Gedan Barai",
+            "Migi Chudan Oi Zuki", "Migi Gedan Barai", "Hidari Chudan Oi Zuki", "Hidari Gedan Barai", "Migi Chudan Oi Zuki",
+            "Hidari Chudan Oi Zuki", "Migi Chudan Oi Zuki", "Hidari Chuda Shuto Uke", "Migi Chudan Shuto Uke", "Migi Chudan Shuto Uke",
+            "Hidari Chudan Shuto Uke", "Yame Hachiji Dachi"
+        ]
+
+        self.current = 0
+
+        self.title_txt = tk.StringVar(self)
+        self.title_txt.set(f"{self.HEIAN_SHODAN[self.current]}")
+
+        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), self.current, False)
+
+        self.cosine_txt = tk.StringVar(self)
+        self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
+
+        self.weighted_txt = tk.StringVar(self)
+        self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
+
+        self.figure = plot(os.path.join('./coordinates', pose), self.current, True)
+
+        self.title_lbl = ttk.Label(self.win, textvariable=self.title_txt, font=("Times new roman", 30, "bold"))
+        self.title_lbl.pack(pady=5)
+
+        self.cosine_lbl = ttk.Label(self.win, textvariable=self.cosine_txt, font=("Times new roman", 15, "bold"))
+        self.cosine_lbl.pack(pady=5)
+        
+        self.weighted_lbl = ttk.Label(self.win, textvariable=self.weighted_txt, font=("Times new roman", 15, "bold"))
+        self.weighted_lbl.pack(pady=5)
+
+        self.prev_btn = ttk.Button(self.win, text="Previous", width=20, command= lambda: self.move(-1, pose))
+        self.prev_btn.pack(padx=5, pady=5, side='left', ipady=20)
+        self.prev_btn.state(["disabled"])
+
+        self.next_btn = ttk.Button(self.win, text="Next", width=20, command= lambda: self.move(1, pose))
+        self.next_btn.pack(padx=5, pady=5, side='right', ipady=20)
+        self.next_btn.state(["!disabled"])
+
+        self.plot = FigureCanvasTkAgg(self.figure, self.win)
+        self.plot.get_tk_widget().pack(pady=5)
+
+    def move(self, delta, pose):
+        self.current += delta
+
+        if self.current == (len(self.HEIAN_SHODAN) - 1):
+            self.next_btn.state(["disabled"])
+            self.prev_btn.state(["!disabled"])
+        elif self.current == 0:
+            self.next_btn.state(["!disabled"])
+            self.prev_btn.state(["disabled"])
+        else:
+            self.next_btn.state(["!disabled"])
+            self.prev_btn.state(["!disabled"])
+
+        self.title_txt.set(f"{self.HEIAN_SHODAN[self.current]}")
+
+        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), self.current, False)
+        self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
+        self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
+
+        self.figure = plot(os.path.join('./coordinates', pose), self.current, True)
+        self.plot.get_tk_widget().destroy()
+        self.plot = FigureCanvasTkAgg(self.figure, self.win)
+        self.plot.get_tk_widget().pack(pady=5)
+
 
 class App(tk.Tk):
     def __init__(self):
