@@ -348,8 +348,8 @@ class History(tk.Frame):
     def calculate(self):
         pose = self.option_var.get()
         print(calculate_similarity(os.path.join('./coordinates', pose), 0, False))
-        plot(os.path.join('./coordinates', pose), 0, True)
-    
+        figure = plot(os.path.join('./coordinates', pose), 0, True)
+        figure.show()
 
 class App(tk.Tk):
     def __init__(self):
