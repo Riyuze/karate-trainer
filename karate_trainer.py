@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 from datetime import datetime
 from person_detector import person_detector
 from get_coordinates import get_coordinates
-from test_prediction import calculate_similarity
+from test_prediction import calculate_similarity, plot
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
@@ -345,24 +345,10 @@ class History(tk.Frame):
         controller.show_frame(Menu)
         self.start_btn.state(["disabled"])
 
-    def plot(self):
-        fig = Figure(figsize = (5, 5), dpi = 100)        
-        y = [i**2 for i in range(101)]
-        z = [i**2 for i in range(201)]
-        plot1 = fig.add_subplot(121)
-        plot2 = fig.add_subplot(122)
-        plot1.plot(y)
-        plot2.plot(z)
-
-        canvas = FigureCanvasTkAgg(fig, master=self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(pady=5)
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        toolbar.update()
-        canvas.get_tk_widget().pack(pady=5)
-
     def calculate(self):
-        print(calculate_similarity(os.path.join('./coordinates', 'reference'), 0, False))
+        pose = self.option_var.get()
+        print(calculate_similarity(os.path.join('./coordinates', pose), 0, False))
+        plot(os.path.join('./coordinates', pose), 0, True)
     
 
 class App(tk.Tk):
