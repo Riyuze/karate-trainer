@@ -63,8 +63,9 @@ class Choice(tk.Frame):
         self.start_btn.state(["!disabled"])
 
     def start(self, controller):
-        train = self.option_var.get()
-        if train == "Heian Shodan":
+        self.train = self.option_var.get()
+        if self.train == "Heian Shodan":
+            # Change settings according to settings chosen
             controller.show_frame(Train)
 
 
@@ -80,7 +81,16 @@ class Train(tk.Frame):
             "u_hidari_chudan_shuto_uke", "v_yame_hachiji_dachi"
         ]
 
-        self.started = False
+        self.info_txt = "Press Space to start training.\nPress Escape to close camera."
+
+        self.graph = FilterGraph()
+
+        self.devices = enumerate(self.graph.get_input_devices())
+        self.devices_list = {item: count for count, item in self.devices}
+
+        self.OPTIONS = self.devices_list
+
+        self.option_var = tk.StringVar(self)
 
         self.TIMER = 10
 
@@ -89,7 +99,15 @@ class Train(tk.Frame):
         self.title_lbl = ttk.Label(self, text="Train", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
 
+        self.info_lbl = ttk.Label(self, text=self.info_txt, font=("Times new roman", 12, "normal"))
+        self.info_lbl.pack(pady=5)
+
+        self.option_menu = ttk.OptionMenu(self, self.option_var, "Select one...", *self.OPTIONS, command= lambda _: self.button_state())
+        self.option_menu.config(width=38)
+        self.option_menu.pack(pady=5)
+
         self.camera_btn = ttk.Button(self, text="Show Camera", width=40, command=lambda: self.show_camera())
+        self.camera_btn.state(["disabled"])
         self.camera_btn.pack(pady=5)
 
         self.preview_btn = ttk.Button(self, text="Preview", width=40, command= lambda: controller.show_frame(Preview))
@@ -98,12 +116,13 @@ class Train(tk.Frame):
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Choice))
         self.back_btn.pack(pady=5)
 
-        self.graph = FilterGraph()
+    def button_state(self):
+        self.camera_btn.state(["!disabled"])
 
     def show_camera(self):
-        print(self.graph.get_input_devices())
+        self.device = self.option_var.get()
 
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(self.devices_list[self.device], cv2.CAP_DSHOW)
 
         self.width, self.height = 1920, 1080
 
@@ -131,7 +150,7 @@ class Train(tk.Frame):
                         if self.TIMER > 0:
                             playsound("./assets/beep.wav", block=False)
                     
-                    cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 0), 1, cv2.LINE_AA)
                     cv2.imshow("Camera", self.img)
                     cv2.waitKey(1)
 
@@ -139,7 +158,7 @@ class Train(tk.Frame):
                     _, self.img = self.cap.read()
 
                     if self.TIMER == 0:
-                        cv2.putText(self.img, "Start!", (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                        cv2.putText(self.img, "Start!", (0, 25), self.font, 1, (255, 255, 0), 1, cv2.LINE_AA)
                         playsound("./assets/double_beep.wav", block=False)
                         cv2.imshow("Camera", self.img)
                         cv2.waitKey(250)
@@ -157,7 +176,7 @@ class Train(tk.Frame):
                                     self.prev = self.current
                                     self.TIMER -= 1
 
-                                cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                                cv2.putText(self.img, str(self.TIMER), (0, 25), self.font, 1, (255, 255, 0), 1, cv2.LINE_AA)
                                 cv2.imshow("Camera", self.img)
                                 cv2.waitKey(1)
 
