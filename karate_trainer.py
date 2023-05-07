@@ -12,6 +12,7 @@ from get_coordinates import get_coordinates
 from test_prediction import calculate_similarity, plot
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from pygrabber.dshow_graph import FilterGraph
 
 
 class Menu(tk.Frame):
@@ -97,7 +98,11 @@ class Train(tk.Frame):
         self.back_btn = ttk.Button(self, text="Back", width=40, command=lambda: controller.show_frame(Choice))
         self.back_btn.pack(pady=5)
 
+        self.graph = FilterGraph()
+
     def show_camera(self):
+        print(self.graph.get_input_devices())
+
         self.cap = cv2.VideoCapture(0)
 
         self.width, self.height = 1920, 1080
