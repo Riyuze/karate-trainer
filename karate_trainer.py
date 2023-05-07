@@ -170,7 +170,7 @@ class Train(tk.Frame):
                                 cv2.imshow("Camera", self.img)
                                 cv2.waitKey(1)
 
-                            if self.index == 2: #Heian Shodan 22
+                            if self.index == 22: #Heian Shodan 22
                                 self.TIMER = 10
                                 self.index = 0
                                 playsound("./assets/training_finished.mp3", block=False)
