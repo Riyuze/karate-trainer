@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 import json
 import os
 
-def import_data(path, world=False):
-    pose_reference = json.load(open('./coordinates/reference/pose_coordinates.json')) if world == False else json.load(open('./coordinates/reference/pose_world_coordinates.json'))
+def import_data(path, reference_path, world=False):
+    pose_reference = json.load(open(os.path.join(reference_path, 'pose_coordinates.json'))) if world == False else json.load(open(os.path.join(reference_path, 'pose_world_coordinates.json')))
     pose_reference_coordinates = []
     for name in pose_reference:
         pose_reference_coordinates.append(pose_reference[name])
@@ -37,8 +37,8 @@ def convert_data(index, pose_reference_coordinates, pose_user_coordinates):
 
     return pose_reference_array, pose_reference_visibility, pose_user_array
 
-def calculate_similarity(path, index, world=False):
-    pose_reference_coordinates, pose_user_coordinates = import_data(path, world)
+def calculate_similarity(path, reference_path, index, world=False):
+    pose_reference_coordinates, pose_user_coordinates = import_data(path, reference_path, world)
 
     pose_reference_array, pose_reference_visibility, pose_user_array = convert_data(index, pose_reference_coordinates, pose_user_coordinates)
 
@@ -58,8 +58,8 @@ def calculate_similarity(path, index, world=False):
 
     return cosine_similarity, weighted_similarity
 
-def plot(path, index, world=False): 
-    pose_reference_coordinates, pose_user_coordinates = import_data(path, world)
+def plot(path, reference_path, index, world=False): 
+    pose_reference_coordinates, pose_user_coordinates = import_data(path, reference_path, world)
 
     WHITE_COLOR = (224, 224, 224)
     BLACK_COLOR = (0, 0, 0)

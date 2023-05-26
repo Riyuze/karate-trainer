@@ -334,9 +334,14 @@ class History(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
 
-        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir != 'reference']
+        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir not in ['reference', 'reference_front']]
+        self.REFERENCE_OPTIONS = ['reference', 'reference_front']
 
         self.option_var = tk.StringVar(self)
+        self.reference_option_var = tk.StringVar(self)
+
+        self.option_state = False
+        self.reference_option_state = False
         
         self.title_lbl = ttk.Label(self, text="History", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
@@ -348,6 +353,10 @@ class History(tk.Frame):
         self.option_menu.config(width=38)
         self.option_menu.pack(pady=5)
 
+        self.reference_option_menu = ttk.OptionMenu(self, self.reference_option_var, "Select one...", *self.REFERENCE_OPTIONS, command= lambda _: self.reference_button_state())
+        self.reference_option_menu.config(width=38)
+        self.reference_option_menu.pack(pady=5)
+
         self.start_btn = ttk.Button(self, text="Start", width=40, command=lambda: self.process())
         self.start_btn.state(["disabled"])
         self.start_btn.pack(pady=5)
@@ -356,12 +365,21 @@ class History(tk.Frame):
         self.back_btn.pack(pady=5)
 
     def button_state(self):
-        self.start_btn.state(["!disabled"])
+        self.option_state = True
+
+        if (self.option_state == True and self.reference_option_state == True):
+            self.start_btn.state(["!disabled"])
+
+    def reference_button_state(self):
+        self.reference_option_state = True
+
+        if (self.option_state == True and self.reference_option_state == True):
+            self.start_btn.state(["!disabled"])
 
     def refresh(self):
         self.menu = self.option_menu['menu']
         self.menu.delete(0, "end")
-        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir != 'reference']
+        self.OPTIONS = [dir for dir in os.listdir('./coordinates') if dir not in ['reference', 'reference_front']]
         for string in self.OPTIONS:
             self.menu.add_command(label=string, command= lambda value=string: self.set_options(value))
 
@@ -375,9 +393,10 @@ class History(tk.Frame):
 
     def process(self):
         pose = self.option_var.get()
-        self.pop_up(pose)
+        reference = self.reference_option_var.get()
+        self.pop_up(pose, reference)
 
-    def pop_up(self, pose):
+    def pop_up(self, pose, reference):
         self.win = tk.Toplevel()
         self.win.wm_title(pose)
 
@@ -394,7 +413,7 @@ class History(tk.Frame):
         self.title_txt = tk.StringVar(self)
         self.title_txt.set(f"{self.HEIAN_SHODAN[self.current]}")
 
-        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), self.current, False)
+        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, False)
 
         self.cosine_txt = tk.StringVar(self)
         self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
@@ -402,7 +421,7 @@ class History(tk.Frame):
         self.weighted_txt = tk.StringVar(self)
         self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
 
-        self.figure = plot(os.path.join('./coordinates', pose), self.current, True)
+        self.figure = plot(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, True)
 
         self.title_lbl = ttk.Label(self.win, textvariable=self.title_txt, font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
@@ -413,18 +432,18 @@ class History(tk.Frame):
         self.weighted_lbl = ttk.Label(self.win, textvariable=self.weighted_txt, font=("Times new roman", 15, "bold"))
         self.weighted_lbl.pack(pady=5)
 
-        self.prev_btn = ttk.Button(self.win, text="Previous", width=20, command= lambda: self.move(-1, pose))
+        self.prev_btn = ttk.Button(self.win, text="Previous", width=20, command= lambda: self.move(-1, pose, reference))
         self.prev_btn.pack(padx=5, pady=5, side='left', ipady=20)
         self.prev_btn.state(["disabled"])
 
-        self.next_btn = ttk.Button(self.win, text="Next", width=20, command= lambda: self.move(1, pose))
+        self.next_btn = ttk.Button(self.win, text="Next", width=20, command= lambda: self.move(1, pose, reference))
         self.next_btn.pack(padx=5, pady=5, side='right', ipady=20)
         self.next_btn.state(["!disabled"])
 
         self.plot = FigureCanvasTkAgg(self.figure, self.win)
         self.plot.get_tk_widget().pack(pady=5)
 
-    def move(self, delta, pose):
+    def move(self, delta, pose, reference):
         self.current += delta
 
         if self.current == (len(self.HEIAN_SHODAN) - 1):
@@ -439,11 +458,11 @@ class History(tk.Frame):
 
         self.title_txt.set(f"{self.HEIAN_SHODAN[self.current]}")
 
-        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), self.current, False)
+        self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, False)
         self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
         self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
 
-        self.figure = plot(os.path.join('./coordinates', pose), self.current, True)
+        self.figure = plot(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, True)
         self.plot.get_tk_widget().destroy()
         self.plot = FigureCanvasTkAgg(self.figure, self.win)
         self.plot.get_tk_widget().pack(pady=5)
