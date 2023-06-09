@@ -120,7 +120,7 @@ def plot(path, reference_path, index, world=False):
                 xs=[-landmark.z],
                 ys=[landmark.x],
                 zs=[-landmark.y],
-                color=_normalize_color(landmark_drawing_spec.color[0]),
+                color=_normalize_color(landmark_drawing_spec.color[1]),
                 linewidth=landmark_drawing_spec.thickness)
             plotted_landmarks_1[idx] = (-landmark.z, landmark.x, -landmark.y)
         if connections:
@@ -141,7 +141,7 @@ def plot(path, reference_path, index, world=False):
                         ys=[landmark_pair[0][1], landmark_pair[1][1]],
                         zs=[landmark_pair[0][2], landmark_pair[1][2]],
                         color=_normalize_color(
-                            connection_drawing_spec.color[1]),
+                            connection_drawing_spec.color[0]),
                         linewidth=connection_drawing_spec.thickness)
 
         plotted_landmarks_2 = {}
@@ -155,7 +155,7 @@ def plot(path, reference_path, index, world=False):
                 xs=[-landmark.z],
                 ys=[landmark.x],
                 zs=[-landmark.y],
-                color=_normalize_color(landmark_drawing_spec.color[1]),
+                color=_normalize_color(landmark_drawing_spec.color[0]),
                 linewidth=landmark_drawing_spec.thickness)
             plotted_landmarks_2[idx] = (-landmark.z, landmark.x, -landmark.y)
         if connections:
@@ -176,7 +176,7 @@ def plot(path, reference_path, index, world=False):
                         ys=[landmark_pair[0][1], landmark_pair[1][1]],
                         zs=[landmark_pair[0][2], landmark_pair[1][2]],
                         color=_normalize_color(
-                            connection_drawing_spec.color[0]),
+                            connection_drawing_spec.color[1]),
                         linewidth=connection_drawing_spec.thickness)
         figure.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
         return figure

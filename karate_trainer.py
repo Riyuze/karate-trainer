@@ -342,9 +342,14 @@ class History(tk.Frame):
 
         self.option_state = False
         self.reference_option_state = False
+
+        self.info_txt = "Select an option to review.\nSelect a reference point.\nRED is Reference, BLUE is User."
         
         self.title_lbl = ttk.Label(self, text="History", font=("Times new roman", 30, "bold"))
         self.title_lbl.pack(pady=5)
+
+        self.info_lbl = ttk.Label(self, text=self.info_txt, font=("Times new roman", 12, "normal"))
+        self.info_lbl.pack(pady=5)
 
         self.refresh_btn = ttk.Button(self, text="Refresh", width=40, command=lambda: self.refresh())
         self.refresh_btn.pack(pady=5)
