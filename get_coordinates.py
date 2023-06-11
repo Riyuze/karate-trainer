@@ -16,10 +16,9 @@ def resize(image):
 
 def import_images(path):
     images = {}
-    images_path = path
 
-    for image in os.listdir(images_path):
-        f = os.path.join(images_path, image)
+    for image in os.listdir(path):
+        f = os.path.join(path, image)
 
         if os.path.isfile(f):
             images[f] = (resize(cv2.imread(f)))
