@@ -1,11 +1,6 @@
 import cv2
 import math
-import numpy as np
-from matplotlib import pyplot as plt
 import mediapipe as mp
-from typing import List, Optional, Tuple, Union, Mapping
-from mediapipe.framework.formats import landmark_pb2
-from dataclasses import dataclass
 import os
 import json
 
@@ -33,7 +28,6 @@ def import_images(path):
 
 def get_coordinates(path):
     mp_pose = mp.solutions.pose
-    mp_drawing_styles = mp.solutions.drawing_styles
 
     images = import_images(path)
 
@@ -51,7 +45,6 @@ def get_coordinates(path):
         for image in images:
             results = pose.process(cv2.cvtColor(images[image], cv2.COLOR_BGR2RGB))
 
-            image_height, image_width, _ = images[image].shape
             if not results.pose_landmarks:
                 continue
 
