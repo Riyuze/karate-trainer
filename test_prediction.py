@@ -3,7 +3,7 @@ from numpy.linalg import norm
 import math
 from mediapipe.framework.formats import landmark_pb2
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Union, Mapping
+from typing import List, Optional, Tuple
 import mediapipe as mp
 from matplotlib import pyplot as plt
 import json
@@ -80,19 +80,6 @@ def plot(path, reference_path, index, world=False):
 
     def _normalize_color(color):
         return tuple(v / 255. for v in color)
-
-    def _normalized_to_pixel_coordinates(
-            normalized_x: float, normalized_y: float, image_width: int,
-            image_height: int) -> Union[None, Tuple[int, int]]:
-        """Converts normalized value pair to pixel coordinates."""
-
-        # Checks if the float value is between 0 and 1.
-        def is_valid_normalized_value(value: float) -> bool:
-            return (value > 0 or math.isclose(0, value)) and (value < 1 or math.isclose(1, value))
-            
-        x_px = min(math.floor(normalized_x * image_width), image_width - 1)
-        y_px = min(math.floor(normalized_y * image_height), image_height - 1)
-        return x_px, y_px
     
     def plot_landmarks(landmark_list_1: landmark_pb2.NormalizedLandmarkList,
                     landmark_list_2: landmark_pb2.NormalizedLandmarkList,
