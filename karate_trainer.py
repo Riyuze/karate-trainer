@@ -10,9 +10,9 @@ from datetime import datetime
 from person_detector import person_detector
 from get_coordinates import get_coordinates
 from test_prediction import calculate_similarity, plot
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pygrabber.dshow_graph import FilterGraph
-import matplotlib.pyplot as plt
 
 
 class Menu(tk.Frame):
@@ -449,7 +449,6 @@ class History(tk.Frame):
         self.plot.get_tk_widget().pack(pady=5)
 
     def move(self, delta, pose, reference):
-        plt.close()
         self.current += delta
 
         if self.current == (len(self.HEIAN_SHODAN) - 1):
