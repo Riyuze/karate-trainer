@@ -409,7 +409,7 @@ class History(tk.Frame):
             "Hidari Gedan Barai", "Migi Chudan Oi Zuki", "Migi Gedan Barai", "Migi Tetsui Uchi", "Hidari Chudan Oi Zuki", 
             "Hidari Gedan Barai", "Miki Jodan Age Uke", "Hidari Age Uke Jodan", "Migi Jodan Age Uke", "Hidari Gedan Barai",
             "Migi Chudan Oi Zuki", "Migi Gedan Barai", "Hidari Chudan Oi Zuki", "Hidari Gedan Barai", "Migi Chudan Oi Zuki",
-            "Hidari Chudan Oi Zuki", "Migi Chudan Oi Zuki", "Hidari Chuda Shuto Uke", "Migi Chudan Shuto Uke", "Migi Chudan Shuto Uke",
+            "Hidari Chudan Oi Zuki", "Migi Chudan Oi Zuki", "Hidari Chudan Shuto Uke", "Migi Chudan Shuto Uke", "Migi Chudan Shuto Uke",
             "Hidari Chudan Shuto Uke", "Yame Hachiji Dachi"
         ]
 
@@ -421,10 +421,10 @@ class History(tk.Frame):
         self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, False)
 
         self.cosine_txt = tk.StringVar(self)
-        self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
+        self.cosine_txt.set(f"Cosine Similarity: {round(self.cosine_similarity, 2)}")
 
         self.weighted_txt = tk.StringVar(self)
-        self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
+        self.weighted_txt.set(f"Weighted Similarity: {round(self.weighted_similarity, 2)}")
 
         self.figure = plot(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, True)
 
@@ -450,7 +450,8 @@ class History(tk.Frame):
 
     def move(self, delta, pose, reference):
         plt.close()
-        self.current += delta
+        if self.current <= 21:
+            self.current += delta
 
         if self.current == (len(self.HEIAN_SHODAN) - 1):
             self.next_btn.state(["disabled"])
@@ -465,8 +466,8 @@ class History(tk.Frame):
         self.title_txt.set(f"{self.HEIAN_SHODAN[self.current]}")
 
         self.cosine_similarity, self.weighted_similarity = calculate_similarity(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, False)
-        self.cosine_txt.set(f"Cosine Similarity: {self.cosine_similarity}")
-        self.weighted_txt.set(f"Weighted Similarity: {self.weighted_similarity}")
+        self.cosine_txt.set(f"Cosine Similarity: {round(self.cosine_similarity, 2)}")
+        self.weighted_txt.set(f"Weighted Similarity: {round(self.weighted_similarity, 2)}")
 
         self.figure = plot(os.path.join('./coordinates', pose), os.path.join('./coordinates', reference), self.current, True)
         self.plot.get_tk_widget().destroy()
