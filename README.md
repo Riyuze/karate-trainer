@@ -39,7 +39,7 @@ pip install -r requirements.txt
 5. Timer will start counting down, images will be captured when timer hits 0 and a double beep sound is played.
 6. After training is finished, you can press **Space** again to restart training, or **Escape** to stop training.
 7. After stopping training, press the **Preview** button to see the captured images.
-   ![image](https://github.com/Riyuze/karate-trainer/assets/98701660/d72820b5-045b-4c18-ac15-51d6113075c6)
+   ![image](https://github.com/Riyuze/karate-trainer/assets/98701660/26c716ef-2e01-425d-9ccf-f4a239e4c36e)
 8. Press the **Get Image** button to retrieve the pictures.
    ![image](https://github.com/Riyuze/karate-trainer/assets/98701660/0c61a1a8-0f83-4cf0-8410-3dd54a16ef08)
 9. If the images are satisfactory, press the **Process** button to start processing the image.
