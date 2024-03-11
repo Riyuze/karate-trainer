@@ -1,5 +1,5 @@
 # Karate Trainer #
-An pose similarity project which measures how accurate a specific karate move is.
+A pose similarity project which measures how accurate a specific karate move is.
 This project was made using **Python** and utilizing several tools and frameworks such as **YoloV5**, **MediaPipe**, **Tensorflow**, and **TKinter**.
 
 # Pre-requisites #
